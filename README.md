@@ -12,6 +12,24 @@ Lean is an expressive functional programming language that allows to formalize t
   In short, mathematics is the ultimate abstraction for numerical computing and Lean can understand mathematics. Hopefully, using Lean will allow us to create really powerful and extensible library for scientific computing.
 
 
+## Quick start
+
+After installing OpenBLAS, add this dependency to your `lakefile.lean`:
+
+```lean
+require scilean from git "https://github.com/lecopivo/SciLean" @ "master"
+```
+
+Then fetch the dependency and its cache:
+
+```bash
+lake update
+lake exe cache get
+```
+
+For a reproducible project, replace `master` with a release tag compatible with your Lean toolchain. See [Using SciLean](#using-scilean) for the platform-specific OpenBLAS linker settings.
+
+
 ## Documentation
 
 ### Manual
