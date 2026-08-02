@@ -94,3 +94,6 @@ lean_lib Foo {
 
 > **Note:** If your project uses `mathlib`, ensure compatibility with the `scilean` version. Alternatively, omit the explicit `mathlib` requirement, SciLean brings in a compatible version as a transitive dependency.
 
+## Examples
+
+- [Harmonic oscillator example](examples/HarmonicOscillator.lean) — an end-to-end SciLean scientific-computing example.
