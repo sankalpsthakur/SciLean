@@ -49,11 +49,14 @@ simproc_decl if_pull (_) := fun e => do
       let t := e.getArg! 3
       let f := e.getArg! 4
       let extraArgs := args[5:]
-      let thn := mkAppN t extraArgs
-      let els := mkAppN f extraArgs
-      let e' ← mkAppOptM ``ite #[none, cond, inst, thn, els]
       let context ← withLocalDeclD `branch α fun branch =>
         mkLambdaFVars #[branch] (mkAppN branch extraArgs)
+      let contextType ← whnf (← inferType context)
+      unless contextType.isArrow do
+        return .continue
+      let thn := mkApp context t
+      let els := mkApp context f
+      let e' ← mkAppOptM ``ite #[none, cond, inst, thn, els]
       let proof ← mkAppOptM ``apply_ite' #[α, none, context, cond, inst, t, f]
 
       trace[Meta.Tactic.if_pull] s!"if_pull: \n{← ppExpr e}\n==>\n{← ppExpr e'}\n"
@@ -68,11 +71,14 @@ simproc_decl if_pull (_) := fun e => do
     let inst := arg.getArg! 2
     let t := arg.getArg! 3
     let f := arg.getArg! 4
-    let thn := mkAppN fn (args.set! i t)
-    let els := mkAppN fn (args.set! i f)
-    let e' ← mkAppOptM ``ite #[none, cond, inst, thn, els]
     let context ← withLocalDeclD `branch α fun branch =>
       mkLambdaFVars #[branch] (mkAppN fn (args.set! i branch))
+    let contextType ← whnf (← inferType context)
+    unless contextType.isArrow do
+      return .continue
+    let thn := mkApp context t
+    let els := mkApp context f
+    let e' ← mkAppOptM ``ite #[none, cond, inst, thn, els]
     let proof ← mkAppOptM ``apply_ite' #[α, none, context, cond, inst, t, f]
 
     trace[Meta.Tactic.if_pull] s!"if_pull: \n{← ppExpr e}\n==>\n{← ppExpr e'}\n"
